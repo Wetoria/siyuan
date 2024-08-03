@@ -3,6 +3,7 @@ module.exports = {
     env: {node: true, browser: true, es6: true},
     parser: "@typescript-eslint/parser",
     plugins: [
+        "plugin:vue/vue3-recommended",
         "@typescript-eslint",
     ],
     extends: [

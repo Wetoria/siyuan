@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {CleanWebpackPlugin} = require("clean-webpack-plugin");
 const {EsbuildPlugin} = require("esbuild-loader");
+const { VueLoaderPlugin } = require("vue-loader");
 
 module.exports = (env, argv) => {
     return {
@@ -22,7 +23,7 @@ module.exports = (env, argv) => {
             "window": "./src/window/index.ts",
         },
         resolve: {
-            extensions: [".ts", ".js", ".tpl", ".scss", ".png", ".svg"],
+            extensions: [".vue", ".ts", ".js", ".tpl", ".scss", ".png", ".svg"],
         },
         optimization: {
             minimize: true,
@@ -32,6 +33,17 @@ module.exports = (env, argv) => {
         },
         module: {
             rules: [
+                {
+                    test: /\.vue$/,
+                    loader: "vue-loader",
+                },
+                {
+                    test: /\.css$/,
+                    use: [
+                        "vue-style-loader",
+                        "css-loader",
+                    ]
+                },
                 {
                     test: /\.tpl/,
                     include: [
@@ -49,6 +61,7 @@ module.exports = (env, argv) => {
                         {
                             loader: "esbuild-loader",
                             options: {
+                                loader: "ts",
                                 target: "es2021",
                             },
                         },
@@ -64,6 +77,7 @@ module.exports = (env, argv) => {
                     test: /\.scss$/,
                     include: [
                         path.resolve(__dirname, "src/assets/scss"),
+                        path.resolve(__dirname, "src"),
                     ],
                     use: [
                         MiniCssExtractPlugin.loader,
@@ -97,6 +111,7 @@ module.exports = (env, argv) => {
             ],
         },
         plugins: [
+            new VueLoaderPlugin(),
             new CleanWebpackPlugin({
                 cleanStaleWebpackAssets: false,
                 cleanOnceBeforeBuildPatterns: [
